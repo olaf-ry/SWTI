@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>测测你是夏日入侵企画的谁？</title>
+<style>
+:root {
+  --primary-blue: #2d9dcf;
+  --sunset-orange: #ff9a76;
+  --retro-black: #222;
+  --bg-color: #fdfaf5;
+  /* 乐器专属色 */
+  --color-mic: #52c41a;   /* 绿 */
+  --color-bass: #fa8c16;  /* 橙 */
+  --color-guitar: #722ed1; /* 紫 */
+  --color-drum: #13c2c2;   /* 蓝 */
+  --color-piano: #fadb14;  /* 黄 */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background-color: var(--bg-color);
+  /* 颗粒感胶片纹理 */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3BaseFilter id='filter'%3BfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3B%3C/filter%3B%3E%3Crect width='100%25' height='100%25' filter='url(%23filter)' opacity='0.05'/%3B%3C/svg%3E");
+  color: var(--retro-black);
+  min-height: 100vh;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+.container { max-width: 600px; margin: 20px auto; position: relative; }
+
+/* 进度条 */
+.progress-container {
+  position: fixed; top: 0; left: 0; width: 100%; height: 6px; background: #eee; z-index: 1000; display: none;
+}
+.progress-bar { height: 100%; background: linear-gradient(to right, var(--sunset-orange), var(--primary-blue)); width: 0%; transition: width 0.3s; }
+
+.screen { display: none; animation: fadeIn 0.6s ease both; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+/* --- 开始页 --- */
+.start-page {
+  text-align: center; padding: 120px 20px; background: rgba(255, 255, 255, 0.7);
+  border: 2px solid var(--retro-black); border-radius: 40px; position: relative; overflow: hidden;
+  backdrop-filter: blur(5px);
+}
+
+/* 浮动乐器Icon系统 */
+.floating-icon {
+  position: absolute; display: flex; flex-direction: column; align-items: center;
+  animation: float 4s infinite ease-in-out; filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.1));
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50% { transform: translateY(-20px) rotate(calc(var(--r, 0deg) + 8deg)); }
+}
+
+/* 散落位置 */
+.icon-mic    { color: var(--color-mic); top: 12%; left: 10%; --r: -10deg; }
+.icon-bass   { color: var(--color-bass); bottom: 18%; left: 12%; --r: -15deg; }
+.icon-guitar { color: var(--color-guitar); top: 18%; right: 10%; --r: 20deg; }
+.icon-drum   { color: var(--color-drum); bottom: 15%; right: 15%; --r: 5deg; }
+.icon-piano  { color: var(--color-piano); top: 48%; left: 8%; --r: -5deg; }
+
+.start-page h1 { font-size: 26px; margin-bottom: 12px; color: var(--retro-black); text-shadow: 2px 2px 0px var(--sunset-orange); }
+.start-page p { font-size: 14px; color: #888; margin-bottom: 50px; letter-spacing: 2px; }
+
+.btn {
+  background: var(--retro-black); color: #fff; border: none; padding: 16px 45px;
+  border-radius: 50px; font-size: 16px; font-weight: bold; cursor: pointer;
+  box-shadow: 6px 6px 0px var(--primary-blue); transition: 0.3s; letter-spacing: 1px;
+}
+.btn:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0px var(--sunset-orange); }
+
+/* --- 答题页 --- */
+.quiz-page { background: #fff; border-radius: 30px; padding: 35px; border: 2px solid var(--retro-black); box-shadow: 10px 10px 0px rgba(0,0,0,0.05); }
+.question-text { font-size: 18px; line-height: 1.6; margin-bottom: 30px; font-weight: 600; }
+.option {
+  background: #fff; border: 1.5px solid #eee; border-radius: 16px; padding: 16px;
+  margin-bottom: 12px; cursor: pointer; transition: 0.2s; font-size: 15px;
+}
+.option:hover { border-color: var(--retro-black); transform: translateX(5px); background: #fdfaf5; }
+.nav { display: flex; gap: 10px; margin-top: 25px; }
+.prev-btn { background: #f0f0f0; border: none; padding: 12px; border-radius: 10px; flex: 1; cursor: pointer; color: #666; font-size: 13px; }
+
+/* --- 结果页 --- */
+.result-page { background: #fff; border-radius: 30px; padding: 40px 25px; border: 2px solid var(--retro-black); text-align: center; }
+.result-img { width: 160px; height: 160px; object-fit: cover; border-radius: 50%; border: 4px solid var(--sunset-orange); margin-bottom: 25px; display: block; margin-left: auto; margin-right: auto; }
+.result-name { font-size: 22px; font-weight: bold; margin-bottom: 20px; color: var(--primary-blue); border-bottom: 2px solid #eee; padding-bottom: 10px; }
+.result-desc { font-size: 14px; line-height: 1.9; color: #444; background: #f9f9f9; padding: 25px; border-radius: 20px; text-align: justify; white-space: pre-line; }
+</style>
+</head>
+<body>
+
+<div class="progress-container" id="progWrap"><div class="progress-bar" id="progBar"></div></div>
+
+<div class="container">
+  <!-- 开始页 -->
+  <div class="screen active" id="pageStart">
+    <div class="start-page">
+      <!-- 5个可爱乐器图标（已删除文字） -->
+      <div class="floating-icon icon-mic">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="22"/>
+        </svg>
+      </div>
+
+      <div class="floating-icon icon-bass">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 16L21 4"/>
+          <circle cx="21" cy="4" r="2" fill="currentColor"/>
+          <path d="M4 20c1 0 2-1 2-2s-1-2-2-2-2 1-2 2 1 2 2 2z"/>
+        </svg>
+      </div>
+
+      <div class="floating-icon icon-guitar">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 12L4 20c-1.5 1.5-1.5 3.5 0 5s3.5 1.5 5 0l8-8"/>
+          <path d="M12 12l9-9"/>
+          <path d="M18 6l2-2M17 5l2-2M19 7l2-2"/>
+        </svg>
+      </div>
+
+      <div class="floating-icon icon-drum">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <ellipse cx="12" cy="7" rx="9" ry="3"/>
+          <path d="M3 7v10c0 1.66 4.03 3 9 3s9-1.34 9-3V7"/>
+          <path d="M5 2l14 10M19 2 5 12"/>
+        </svg>
+      </div>
+
+      <div class="floating-icon icon-piano">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <rect x="2" y="5" width="20" height="14" rx="2"/>
+          <line x1="7" y1="5" x2="7" y2="19"/>
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="17" y1="5" x2="17" y2="19"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+        </svg>
+      </div>
+
+      <h1>测测你是夏日入侵企画的谁？</h1>
+      <p>Finding Your Summer Echo</p>
+      <button class="btn" onclick="startTest()">开始测试</button>
+    </div>
+  </div>
+
+  <!-- 答题页 -->
+  <div class="screen" id="pageQuiz">
+    <div class="quiz-page">
+      <div class="question-text" id="qText"></div>
+      <div id="optionsBox"></div>
+      <div class="nav">
+        <button class="prev-btn" onclick="prevQ()">← 返回上一题</button>
+      </div>
+      <div style="margin-top:15px; color:#ccc; font-size:11px; text-align:center;" id="qNum"></div>
+    </div>
+  </div>
+
+  <!-- 结果页 -->
+  <div class="screen" id="pageResult">
+    <div class="result-page">
+      <div style="font-size:12px; color:#999; margin-bottom:10px;">测 试 结 果</div>
+      <img id="resultImg" class="result-img" src="">
+      <div class="result-name" id="resultName"></div>
+      <div class="result-desc" id="resultDesc"></div>
+      <button class="btn" style="margin-top:30px" onclick="location.reload()">重新测试</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  { q:"在一个没有预设行程的周末早晨，你通常如何开启第一小时？", o:[{t:"查看讯息、关注正在发生的热点，感受群体流向。",k:"A"},{t:"盯着窗外树影的晃动或光线的折觉，陷入无意义的遐想。",k:"B"},{t:"迅速起床，用一组大幅度的拉伸或整理来激活能量。",k:"C"},{t:"开启一套极为熟悉的、步骤精确的个人化准备流程。",k:"D"}] },
+  { q:"你如何处理那些已经过去很久、却一直留在身边的旧物件？", o:[{t:"每件都对应一段具体的人际故事或集体记忆，舍不得丢。",k:"A"},{t:"不在意价值，只在意它们组合在一起时散发的奇特氛围。",k:"B"},{t:"即便已经破损，留着它们会让你觉得生活很有厚度和力量。",k:"C"},{t:"会分门别类地收纳，享受那种万物皆在掌控之中的秩序感。",k:"D"}] },
+  { q:"当听到一首节奏感极强的陌生歌曲时，你的第一反应通常是？", o:[{t:"试图听清歌词里的故事，代入自己的情感经历。",k:"A"},{t:"脑海中自动生成一段和音乐节奏契合的奇幻影像。",k:"B"},{t:"不自觉地跟着点头或跺脚，享受纯粹的律动和冲击力。",k:"C"},{t:"下意识地分析乐器的配合或节奏的变化，评价其精准度。",k:"D"}] },
+  { q:"你认为“真正的成熟”意味着什么？", o:[{t:"看清了世界的喧嚣与真相，却依然选择保持热忱和归属感。",k:"A"},{t:"保护好了内心的那个孩子，让他始终拥有随时流浪和做梦的权利。",k:"B"},{t:"拥有了更强的行动力，去征服那些曾经让自己感到恐惧的高地。",k:"C"},{t:"建立了一套严丝合缝的自我标准，能在纷扰中维持稳定的个人质感。",k:"D"}] },
+  { q:"面对一个完全陌生的社交场合，你通常的状态是？", o:[{t:"先分析场上的氛围和人物关系，寻找合适的切入点。",k:"A"},{t:"礼貌应对，但灵魂可能在观察墙上的挂画或灯影。",k:"B"},{t:"主动打破僵局，用直接的谈吐带动周围的气氛。",k:"C"},{t:"保持体面和距离，通过专业的表达赢得他人的尊重。",k:"D"}] },
+  { q:"当生活突然变得极度混乱时，你的第一自救手段是？", o:[{t:"和信任的人长谈，或者通过文字记录来复盘情绪。",k:"A"},{t:"去做一件完全不相关的小事，通过“无意识”来止痛。",k:"B"},{t:"去出一身大汗，或者完成一项极具成就感的体力活。",k:"C"},{t:"回归基础的、枯燥的练习，通过机械的秩序找回掌控感。",k:"D"}] },
+  { q:"你如何看待“离别”这种情绪？", o:[{t:"它是一种长期的阵痛，需要通过不断的复盘来赋予其意义。",k:"A"},{t:"它是一个未完待续的悬念，只要拒绝说再见，梦境就还在继续。",k:"B"},{t:"它是一次蓄力的机会，伤感很直接，但很快会转化为向前的动力。",k:"C"},{t:"它是一个客观的刻度，会将其克制地存档，然后投入下一步的打磨。",k:"D"}] },
+  { q:"当你取得了一项值得自豪的小成就，你更倾向于？", o:[{t:"写一段深刻的长文，分享背后的心路历程和对团队的感谢。",k:"A"},{t:"拍一张极具艺术感的局部照片，不直说，但懂的人自然懂。",k:"B"},{t:"兴高采烈地向所有人展示成果，享受那种最直接的赞美和快乐。",k:"C"},{t:"默默给自己一点实质的奖励，然后分析下一次如何做得更极致。",k:"D"}] },
+  { q:"你的“秘密基地”通常是什么样子的？", o:[{t:"充满了生活的气息，到处是和朋友们的合照和共同回忆。",k:"A"},{t:"堆满了奇奇怪怪、没有实用价值却能激发想象力的收藏品。",k:"B"},{t:"开阔且充满生命力，能让你随时起身舒展筋骨或肆意大笑。",k:"C"},{t:"极度私密且专业，灯光、陈列、温度都经过你的精心打磨。",k:"D"}] },
+  { q:"你如何看待“计划”这件事？", o:[{t:"需要有清晰的逻辑，但执行中必须充满即兴的火花。",k:"A"},{t:"计划赶不上变化，更愿意跟着直觉和感官去流浪。",k:"B"},{t:"它是通往目标的阶梯，只要开始了就必须全力以赴。",k:"C"},{t:"它是对自我的磨练，享受每一个细节都按部就班的快感。",k:"D"}] },
+  { q:"在夏天的午后，你最迷恋的瞬间是？", o:[{t:"和伙伴们在嘈杂的排档大笑，分不清现实还是梦境。",k:"A"},{t:"观察冰块在苏打水里融化的形状，或者阳光在墙上的位移。",k:"B"},{t:"顶着烈日大跑一场后的那口冰饮料，全身细胞都在叫嚣。",k:"C"},{t:"躲在冷气充足的室内，反复打磨一个手上的小工艺或练习。",k:"D"}] },
+  { q:"你觉得“金钱”最大的用处在于？", o:[{t:"支撑更有意义的集体行动，以及守护那些脆弱的理想。",k:"A"},{t:"购买那些能带你逃离现实、激发灵感的“奇趣碎片。",k:"B"},{t:"提升生活的硬核质量，购买更高阶的装备去体验世界。",k:"C"},{t:"投资自己的专业技能，构建一个无可替代的个人壁垒。",k:"D"}] },
+  { q:"当你在工作中被误解时，你会？", o:[{t:"试图解释逻辑，若无法沟通，便会清醒地与对方划清界限。",k:"A"},{t:"觉得无奈但又觉得荒诞有趣，甚至会从中观察到人性的幽默。",k:"B"},{t:"感到很直接的愤怒或委屈，但发泄出来后会迅速投入下一步。",k:"C"},{t:"用结果说话，在专业领域做到让对方彻底无话可说。",k:"D"}] },
+  { q:"你最向往的“英雄形象”是？", o:[{t:"带着大家在平凡的日常中寻找不平凡的宝藏。",k:"A"},{t:"在世界的角落里收集那些被遗忘的美丽细节。",k:"B"},{t:"用身体和意志去征服恐惧，给他人带去热量。",k:"C"},{t:"在方寸之间深耕一辈子，达到无人能及的高度。",k:"D"}] },
+  { q:"你更希望被哪种方式记住？", o:[{t:"一个有着清醒头脑和温柔灵魂的人。",k:"A"},{t:"一个眼睛里永远闪烁着奇妙光芒的人。",k:"B"},{t:"一个无论何时何地都散发着生命力的人。",k:"C"},{t:"一个专业、严谨且生活极具质感的人。",k:"D"}] },
+  { q:"你对“仪式感”的理解是？", o:[{t:"它是连接过去与未来的桥梁，是群体之间的一种情感契约。",k:"A"},{t:"它是对抗生活枯燥的魔法，是随时给自己开启的一个小剧场。",k:"B"},{t:"它是对当下的热烈致敬，是每一个值得庆祝的瞬间。",k:"C"},{t:"它是对自我的精神洗礼，是每个细节都要追求完美的坚持。",k:"D"}] },
+  { q:"在电影或书中，你通常最关注？", o:[{t:"故事背后的内核逻辑：这个作品试图探讨什么样的生命意义。",k:"A"},{t:"那些神来之笔的细节：某个构图、某种色调或一个隐喻。",k:"B"},{t:"强烈的感官冲突：那种直接撞击心灵的生命力和热血瞬间。",k:"C"},{t:"制作的精良程度：叙事的严密性、逻辑的闭环以及技术的巅峰。",k:"D"}] },
+  { q:"你如何处理自己的负面情绪？", o:[{t:"把它们写下来，或者通过复盘来分析它们产生的源头。",k:"A"},{t:"将它们转化为创作的动力，或者通过想象力把它们变没。",k:"B"},{t:"快速行动，通过运动、社交或挑战来转移注意力。",k:"C"},{t:"保持冷处理，躲进自己的舒适圈，通过机械劳动找回宁静。",k:"D"}] },
+  { q:"你更喜欢什么样的团队氛围？", o:[{t:"大家有着共同的远方，且能分享最深层的情感。",k:"A"},{t:"每个人都是独特的，能互不干扰又互相启发。",k:"B"},{t:"大家充满了干劲，即便吵架也充满了生命力。",k:"C"},{t:"每个环节都衔接完美，追求极致的产出质量。",k:"D"}] },
+  { q:"当有人请求你的帮助时，你的第一本能是？", o:[{t:"关注对方的情感需求，先从心态和逻辑上给予支持。",k:"A"},{t:"给出一些意想不到的奇妙建议，尝试用新视角解决问题。",k:"B"},{t:"爽快答应并立刻付诸行动，甚至直接帮对方解决最难的部分。",k:"C"},{t:"保持客观理性，给出最稳健、最符合专业逻辑的解决方案。",k:"D"}] },
+  { q:"你最迷恋哪种“空间感”？", o:[{t:"集体共振的空间：比如合影中每个人紧挨着的温热感。",k:"A"},{t:"充满留白的空间：能让你在思绪里进行无边际的穿梭。",k:"B"},{t:"充满动能的空间：比如开阔的原野或能肆意跳动的空地。",k:"C"},{t:"绝对秩序的空间：所有的陈设都按照你的审美严丝合缝。",k:"D"}] },
+  { q:"关于“成长”，你最深的感触是？", o:[{t:"明白了个人的力量有限，所以更珍惜那份集体的归属感。",k:"A"},{t:"发现生活其实是一场收集游戏，那些看似碎小的瞬间才是财富。",k:"B"},{t:"感受到生命在不断突破边界，那种征服自我的快感无可取代。",k:"C"},{t:"发现极致的自由来自于深度的自律，通过打磨自我获得宁静。",k:"D"}] },
+  { q:"你如何度过一个失眠的夜晚？", o:[{t:"复盘过去一年的片段，在深夜里和自己进行深度对话。",k:"A"},{t:"盯着墙上的影子，编织一个又一个没有结局的奇妙故事。",k:"B"},{t:"只要天一亮，就会立刻出门拥抱第一缕阳光，驱散阴影。",k:"C"},{t:"既然睡不着，就去钻研一个平时没空深入的技术性小难题。",k:"D"}] },
+  { q:"当不得不面对琐碎平凡的家务活时，你会？", o:[{t:"把它当成一种心理整理，边做边梳理最近的人际关系。",k:"A"},{t:"边做边听播客，试图把枯燥的劳动变成一种有趣的拼图。",k:"B"},{t:"干净利落地完成，把它当成一种简单的体能释放和奖励。",k:"C"},{t:"追求极度的洁净和有序，享受物品回归原位的视觉快感。",k:"D"}] },
+  { q:"你更愿意把钱花在？", o:[{t:"能够和伙伴们一起体验、一起回忆的经历上。",k:"A"},{t:"那些能触动你的直觉、具有独特审美价值的设计品上。",k:"B"},{t:"能够显著提升个人形象、增强体能或冒险体验的装备上。",k:"C"},{t:"能够让你的私域生活变得更专业、更具质感的高阶器物上。",k:"D"}] },
+  { q:"你更倾向于如何社交？", o:[{t:"深度的、一对一的灵魂碰撞，或者和老友们长久的陪伴。",k:"A"},{t:"随性的、基于共同审美或新奇话题的即兴交流。",k:"B"},{t:"广泛的、充满能量互换的聚会，享受那种热气腾腾的连接。",k:"C"},{t:"精准的、基于专业领域或共同品质生活的优质社交。",k:"D"}] },
+  { q:"你对“重复”的态度是？", o:[{t:"它虽然枯燥，却是通往宏大意义必经的修行之路。",k:"A"},{t:"试图在每一次重复中发现微小的新变数，避免无聊。",k:"B"},{t:"它会消磨激情，除非是为了完成一个巨大的突破。",k:"C"},{t:"它是通往极致专业的基石，享受每一个细节被打磨的过程。",k:"D"}] },
+  { q:"当你感到精疲力竭时，最能治愈你的画面是？", o:[{t:"一盏暖灯下，几个老友围坐在一起低声交谈。",k:"A"},{t:"城市角落里，一个不为人知却极其美丽的局部风景。",k:"B"},{t:"挥洒汗水后，迎风站立在开阔高处的那个瞬间。",k:"C"},{t:"工作室里，所有器材都归位、一尘不染的那个定格。",k:"D"}] },
+  { q:"你更认同哪种生活哲学？", o:[{t:"世界上只有一种英雄主义，就是认清生活真相后热爱它。",k:"A"},{t:"生活不在于你经历了多少，而在于你捕捉到了多少有趣的瞬间。",k:"B"},{t:"所谓生活，就是要在跌跌撞撞中，依然有勇气去大笑和奔跑。",k:"C"},{t:"唯有极致的专业和极致的生活质感，才能让灵魂获得真正的自由。",k:"D"}] },
+  { q:"对于“未来”，你最不希望发生的是？", o:[{t:"失去了情感的连接，变得麻木、疏离且不再有归属感。",k:"A"},{t:"失去了想象的灵光，生活变成了一部毫无悬念的纪录片。",k:"B"},{t:"失去了生命的动能，变得不再勇敢、不再有突破的冲劲。",k:"C"},{t:"失去了对生活的掌控，秩序崩溃，生活变得廉价且混乱。",k:"D"}] },
+  { q:"当你进入一个咖啡馆或书店，你的关注点首先落在？", o:[{t:"店内的氛围和在那里的客人们，感受这里的“气场”。",k:"A"},{t:"陈列柜里奇特的艺术装置，或光线洒在书脊上的质感。",k:"B"},{t:"这里是否有足够的活动空间，以及带给你的直观能量。",k:"C"},{t:"店内的细节把控：吧台的专业度、器材的档次或收纳的水平。",k:"D"}] },
+  { q:"你如何看待“时间”的流逝？", o:[{t:"时间是记忆的刻度，承载着每一个感人的生命片段。",k:"A"},{t:"时间是流动的梦境，只要心存幻想，你就能减慢它的速度。",k:"B"},{t:"时间是战斗的计时，每一刻都应该活得热烈且直接。",k:"C"},{t:"时间是专业的累积，每一分每一秒都应当贡献给进阶。",k:"D"}] },
+  { q:"当你必须要发表意见时，你的风格是？", o:[{t:"充满逻辑和共情力，试图寻找一个大家都能接受的意义。",k:"A"},{t:"随性且具发散性，常会给出一些出人意料的独特视角。",k:"B"},{t:"直接且充满自信，用最肯定的语气表达自己的态度。",k:"C"},{t:"简练且具专业性，用最严谨的数据或客观事实说话。",k:"D"}] },
+  { q:"你最享受的“成就感”来自于？", o:[{t:"看到团队因 your努力而更具向心力，大家共同完成了一场梦。",k:"A"},{t:"在平凡的生活碎片中，拼凑出了一幅别人看不见的奇妙画卷。",k:"B"},{t:"克服了自己内心的恐惧，完成了一项曾经认为不可能的挑战。",k:"C"},{t:"经过千百次的单调练习，终于掌握了一门极具深度的技能。",k:"D"}] },
+  { q:"你更喜欢哪种类型的旅行伙伴？", o:[{t:"深度的灵魂伴侣，能分享每一次的心灵波动。",k:"A"},{t:"奇特的脑洞伙伴，能一起在未知的角落发现趣味。",k:"B"},{t:"充满动力的玩伴，能一起去冒险、去尝试极限。",k:"C"},{t:"极具生活品位的向导，能保证每一次旅行都很有质感。",k:"D"}] },
+  { q:"关于“梦想”，你更倾向于？", o:[{t:"它是我们几个人的集体契约，是漫长路途中的火光。",k:"A"},{t:"它是一个又一个待发掘的小秘密，散落在生活的缝隙。",k:"B"},{t:"它是一场热血的征途，必须通过不断的行动去靠近。",k:"C"},{t:"它是你自己亲手打造的一座宫殿，是完美的个人领域。",k:"D"}] },
+  { q:"当你心情大好时，你通常会？", o:[{t:" 写一段感性的话，分享此刻的幸福感给重要的人。",k:"A"},{t:"开始一些天马行空的创作，或者去收集一些开心的笑脸。",k:"B"},{t:"带上身边最亲近的存在大闹一场，享受纯粹的生命喜悦。",k:"C"},{t:"给自己做一个精致的仪式，提升这一刻的生活品质感。",k:"D"}] },
+  { q:"最后，你希望你的人格像是？", o:[{t:"沉稳的大脑：连接情感，输出意义，让大家不再迷茫。",k:"A"},{t:"敏锐的眼睛：捕捉微光，发现奇迹，让生活不再无聊。",k:"B"},{t:"热诚的心脏：散发热量，提供动力，让一切充满生机。",k:"C"},{t:"坚固的骨架：建立秩序，追求极致，让灵魂有所依傍。",k:"D"}] }
+];
+
+// 结果配图（在线图片，直接显示）
+const resultData = {
+  A: {
+    name: "灰鸿 —— 现实与浪漫的策展人",
+    desc: "你是那个在深夜里，把所有人凌乱的碎片细细缝合起来的人。你拥有一双极其清醒的眼睛，能看穿城市角落里的灰尘与粗粝，却依然在胸口藏着一簇不灭的火。\n\n你的浪漫并非不切实际的幻想，而是在认清现实的庞大后，依然选择为平凡的生活赋予一个动人的逻辑。你习惯在热闹的边缘保留一份淡淡的疏离，那是因为你的能量从不来自外界的喧哗，而来自那些能产生深度共鸣的灵魂瞬间。你是风浪中那个克制且厚重的领航员，用你的清醒与深情，为所有人标记着远方的意义。",
+    img: "images/XFH.jpg"
+  },
+  B: {
+    name: "张肯尼 —— 细节里流浪的艺术家",
+    desc: "你是一个在时间的缝隙里自由漫步的人，拥有一双能从裂缝中窥见星空的眼睛。对你而言，生活从来不是一场奔向终点的竞赛，而是一场永无止境的拾荒之旅。\n\n你在旧报纸的留白处、在午后晃动的树影里，收集着那些被别人轻易遗忘的诗意。你在对美的直觉上，比谁都清醒且坚定。你本能地抗拒任何形式的“大结局”，因为你希望所有美好的瞬间都能永远处于“正在进行时”。你习惯用轻盈的幽默去化解现实的沉重，守护着群体里那份最纯粹的幻梦。",
+    img: "images/kenny.jpg"
+  },
+  C: {
+    name: "皮皮 —— 能量与热诚的行动者",
+    desc: "你是生命力的化身，是一个自带热量、永不熄灭的太阳。你的性格简单、纯粹且充满韧性，拥有一种“直觉驱动”的非凡力量。\n\n你不屑于复杂的逻辑推导，对你而言，最好的答案永远在行动中。你热爱身体的突破，热爱汗水的挥洒，热爱那种征服恐惧后站在高处的直接快感。你极度重视亲情和归属感，有着保护弱小的正义感。你是那个在阴霾中大喊“早安”的人，用最原始的热量消融生活的冰川。",
+    img: "images/pp.jpg"
+  },
+  D: {
+    name: "口儿 —— 质感生活的极客修行者",
+    desc: "你是一个在极度宁静中修行的行者，拥有极其强大的内心内核与克制的灵魂。你的生活美学源于一种近乎极致的专业与秩序。\n\n你相信时间的力量，相信在那千百次枯燥重复的打磨之后，平庸的日常终会折射出半透明的质感。你习惯通过具体的、有触感的行为去确认生活的真实。当大家都在天马行空地勾勒理想时，是你在寂静中一砖一瓦地夯实着地基。你的温柔内敛且无声，稳稳地托住了所有人的浪漫。",
+    img: "images/coco.jpg"
+  }
+};
+
+let currentQ = 0;
+let answers = [];
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.getElementById("progWrap").style.display = (id === "pageQuiz") ? "block" : "none";
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById("qNum").innerText = `Step ${currentQ + 1} / ${questions.length}`;
+  document.getElementById("qText").innerText = q.q;
+  let html = "";
+  q.o.forEach(opt => {
+    html += `<div class="option" onclick="select('${opt.k}')">${opt.t}</div>`;
+  });
+  document.getElementById("optionsBox").innerHTML = html;
+  document.getElementById("progBar").style.width = (currentQ / questions.length * 100) + "%";
+}
+
+function select(k) {
+  answers[currentQ] = k;
+  if(currentQ < questions.length - 1) {
+    currentQ++;
+    setTimeout(renderQuestion, 200);
+  } else {
+    document.getElementById("progBar").style.width = "100%";
+    setTimeout(showResult, 400);
+  }
+}
+
+function prevQ() {
+  if(currentQ > 0) { currentQ--; renderQuestion(); }
+}
+
+function startTest() { showScreen("pageQuiz"); renderQuestion(); }
+
+function showResult() {
+  const count = {A:0, B:0, C:0, D:0};
+  answers.forEach(k => count[k]++);
+  let max = 'A';
+  for(let k in count) if(count[k] > count[max]) max = k;
+  const res = resultData[max];
+  document.getElementById("resultName").innerText = res.name;
+  document.getElementById("resultDesc").innerText = res.desc;
+  document.getElementById("resultImg").src = res.img;
+  showScreen("pageResult");
+}
+</script>
+</body>
+</html>
