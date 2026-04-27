@@ -93,6 +93,15 @@ body {
 .result-img { width: 160px; height: 160px; object-fit: cover; border-radius: 50%; border: 4px solid var(--sunset-orange); margin-bottom: 25px; display: block; margin-left: auto; margin-right: auto; }
 .result-name { font-size: 22px; font-weight: bold; margin-bottom: 20px; color: var(--primary-blue); border-bottom: 2px solid #eee; padding-bottom: 10px; }
 .result-desc { font-size: 14px; line-height: 1.9; color: #444; background: #f9f9f9; padding: 25px; border-radius: 20px; text-align: justify; white-space: pre-line; }
+ <div id="resultEgg" style="
+  margin-top:20px;
+  font-size:14px;
+  color:#666;
+  background:#fffbe6;
+  padding:15px;
+  border-radius:12px;
+  border:1px dashed #ffd591;
+"></div> 
 </style>
 </head>
 <body>
@@ -223,22 +232,50 @@ const resultData = {
   A: {
     name: "灰鸿 —— 现实与浪漫的策展人",
     desc: "你是那个在深夜里，把所有人凌乱的碎片细细缝合起来的人。你拥有一双极其清醒的眼睛，能看穿城市角落里的灰尘与粗粝，却依然在胸口藏着一簇不灭的火。\n\n你的浪漫并非不切实际的幻想，而是在认清现实的庞大后，依然选择为平凡的生活赋予一个动人的逻辑。你习惯在热闹的边缘保留一份淡淡的疏离，那是因为你的能量从不来自外界的喧哗，而来自那些能产生深度共鸣的灵魂瞬间。你是风浪中那个克制且厚重的领航员，用你的清醒与深情，为所有人标记着远方的意义。",
-    img: "images/XFH.jpg"
+    img: "./images/XFH.jpg",
+    eggs: [
+      "你是那种在群里聊“改天聚”时，会默默打开日历查找空档并提出具体日期的人。",
+      "你是那种一边吐槽工资怎么还不发，一边又会给偶尔路过的流浪猫买罐头的人。",
+      "你是那种在聚餐结束时，会习惯性帮大家核对账单是否有重复收费项的人。",
+      "你是那种即便生活再乱，也会在周日晚上洗好水果、熨好明天要穿的衬衫的人。",
+      "你是那种朋友受挫时从不讲大道理，只会转个红包说“走，带你吃顿好的”的人。"
+    ]
   },
   B: {
     name: "张肯尼 —— 细节里流浪的艺术家",
     desc: "你是一个在时间的缝隙里自由漫步的人，拥有一双能从裂缝中窥见星空的眼睛。对你而言，生活从来不是一场奔向终点的竞赛，而是一场永无止境的拾荒之旅。\n\n你在旧报纸的留白处、在午后晃动的树影里，收集着那些被别人轻易遗忘的诗意。你在对美的直觉上，比谁都清醒且坚定。你本能地抗拒任何形式的“大结局”，因为你希望所有美好的瞬间都能永远处于“正在进行时”。你习惯用轻盈的幽默去化解现实的沉重，守护着群体里那份最纯粹的幻梦。",
-    img: "images/kenny.jpg"
+    img: "./images/kenny.jpg",
+    eggs: [
+      "你是那种走在路上会突然被路人的一个书包挂件吸引，然后脑补出对方一整套生活轨迹和性格的人。",
+      "你是那种在电影院看片尾字幕不肯走，只为听完最后那段深得你心的配乐的人。",
+      "你是那种能从对方发来的一个表情包里，敏锐读出他今天心情其实并不好的人。",
+      "你是那种相册里存满了云朵、路标和夕阳，唯独很少有自己正脸自拍照的人。",
+      "你是那种深夜刷到一条伤感文案，会反反复复联想到自己三年前那段经历的人。"
+    ]
   },
   C: {
     name: "皮皮 —— 能量与热诚的行动者",
     desc: "你是生命力的化身，是一个自带热量、永不熄灭的太阳。你的性格简单、纯粹且充满韧性，拥有一种“直觉驱动”的非凡力量。\n\n你不屑于复杂的逻辑推导，对你而言，最好的答案永远在行动中。你热爱身体的突破，热爱汗水的挥洒，热爱那种征服恐惧后站在高处的直接快感。你极度重视亲情和归属感，有着保护弱小的正义感。你是那个在阴霾中大喊“早安”的人，用最原始的热量消融生活的冰川。",
-    img: "images/pp.jpg"
+    img: "./images/pp.jpg",
+    eggs: [
+      "你是那种受不了任何冷场，哪怕面对刚认识的陌生人，也能凭一己之力把气氛聊到像认识了十年的老友一样的人。",
+      "你是那种在所有人都犹豫要不要跳槽时，已经投完简历并约好面试时间的人。",
+      "你是那种哪怕在下雨天赶车，也会为了赶上那一班地铁而在扶梯上狂奔的人。",
+      "你是那种情绪来得快去得更快，前一秒还在为烂工作烦得要死，下一秒看到路边可爱的小狗就瞬间治愈满血复活的人。",
+      "你是那种有什么不满绝不憋着，一定会当面说清楚然后转头就把它忘掉的人。"
+    ]
   },
   D: {
     name: "口儿 —— 质感生活的极客修行者",
     desc: "你是一个在极度宁静中修行的行者，拥有极其强大的内心内核与克制的灵魂。你的生活美学源于一种近乎极致的专业与秩序。\n\n你相信时间的力量，相信在那千百次枯燥重复的打磨之后，平庸的日常终会折射出半透明的质感。你习惯通过具体的、有触感的行为去确认生活的真实。当大家都在天马行空地勾勒理想时，是你在寂静中一砖一瓦地夯实着地基。你的温柔内敛且无声，稳稳地托住了所有人的浪漫。",
-    img: "images/coco.jpg"
+    img: "./images/coco.jpg",
+    eggs: [
+      "你是那种看到别人PPT上的字体没对齐，会心痒到恨不得立刻抢过鼠标的人。",
+      "你是那种哪怕去楼下拿个快递，也要把睡衣换掉、稍微收拾一下头发才出门的人。",
+      "你是那种包里永远备着湿纸巾、充电宝和唇膏，随时准备应对生活意外的人。",
+      "你是那种买家电前会把所有差评看一遍，并拉出一张对比表格横向测评的人。",
+      "你是那种即便在最累的周五晚上，也会坚持把外卖盒分类好、垃圾带下楼的人。"
+    ]
   }
 };
 
@@ -286,6 +323,8 @@ function showResult() {
   let max = 'A';
   for(let k in count) if(count[k] > count[max]) max = k;
   const res = resultData[max];
+  const egg = res.eggs[Math.floor(Math.random() * res.eggs.length)];
+  document.getElementById("resultEgg").innerText = "💡 " + egg;
   document.getElementById("resultName").innerText = res.name;
   document.getElementById("resultDesc").innerText = res.desc;
   document.getElementById("resultImg").src = res.img;
