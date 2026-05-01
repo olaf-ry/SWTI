@@ -253,13 +253,11 @@ function showScreen(id) {
 
 function renderQuestion() {
   const q = questions[currentQ];
-  document.getElementById("qNum").innerText = 
-Step ${currentQ + 1} / ${questions.length};
+  document.getElementById("qNum").innerText = `Step ${currentQ + 1} / ${questions.length}`;
   document.getElementById("qText").innerText = q.q;
   let html = "";
   q.o.forEach(opt => {
-    html += 
-<div class="option" onclick="select('${opt.k}')">${opt.t}</div>;
+    html += `<div class="option" onclick="select('${opt.k}')">${opt.t}</div>`;
   });
   document.getElementById("optionsBox").innerHTML = html;
   document.getElementById("progBar").style.width = (currentQ / questions.length * 100) + "%";
